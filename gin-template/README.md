@@ -3,20 +3,6 @@
 ## Runtime  
 - Go: v1.24.1
 
-## Install dependencies  
-
-```bash
-# bash
-go mod tidy  
-```
-
-## Run  
-
-```bash
-# bash
-go run mian.go
-```
-
 ## Install & Run via Makefile
 
 - Install 
@@ -27,11 +13,6 @@ go run mian.go
 make tidy
 # or 
 make td
-
-- step2
-make install
-# or 
-make i
 ```
 
 - Run (dev)
