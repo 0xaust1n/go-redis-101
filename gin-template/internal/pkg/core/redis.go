@@ -17,6 +17,8 @@ type IRedis interface {
 	Set(key string, value string, ttl time.Duration) error
 }
 
+var _ IRedis = (*Redis)(nil)
+
 func (r *Redis) Get(key string) (string, error) {
 	return r.client.Get(key).Result()
 }

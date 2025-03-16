@@ -29,17 +29,21 @@ func DefaultConfig() *RouterConfig {
 
 type RouterGroup interface {
 	Group(path string, handlers ...HandlerFunc) RouterGroup
+	IMethod
+}
+
+var _ IMethod = (*routerGroup)(nil)
+
+type IMethod interface {
+	GET(string, ...HandlerFunc)
+	POST(string, ...HandlerFunc)
+	PUT(string, ...HandlerFunc)
+	DELETE(string, ...HandlerFunc)
 }
 
 // routerGroup implements RouterGroup interface
 type routerGroup struct {
 	group *gin.RouterGroup
-}
-
-// Router is the main router structure that wraps gin.Engine
-type Router struct {
-	engine *gin.Engine
-	*routerGroup
 }
 
 // Implementation of RouterGroup interface methods
@@ -63,6 +67,19 @@ func (rg *routerGroup) DELETE(path string, handlers ...HandlerFunc) {
 	rg.group.DELETE(path, handlers...)
 }
 
+// Router is the main router structure that wraps gin.Engine
+type Router struct {
+	engine *gin.Engine
+	*routerGroup
+}
+
+type IRouter interface {
+	Use(...HandlerFunc)
+	Run(string) error
+}
+
+var _ IRouter = (*Router)(nil)
+
 // Router methods
 func NewRouter() *Router {
 	return NewWithConfig(DefaultConfig())
@@ -84,14 +101,6 @@ func NewWithConfig(config *RouterConfig) *Router {
 	return &Router{
 		engine:      engine,
 		routerGroup: &routerGroup{group: engine.Group("")},
-	}
-}
-
-// Group creates a new route group while maintaining the same engine
-func (r *Router) Group(path string, handlers ...HandlerFunc) *Router {
-	return &Router{
-		engine:      r.engine,
-		routerGroup: &routerGroup{group: r.group.Group(path, handlers...)},
 	}
 }
 
