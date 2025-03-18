@@ -7,12 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *healthCheckHandler) Ok(c *gin.Context) {
+func (h *handler) Ok(c *gin.Context) {
 	message := "Server Alive"
 
 	h.redis.Set("healthcheck", "ok", 0)
 
-	c.JSON(http.StatusOK, interfaces.BaseResponse{
+	c.JSON(http.StatusOK, interfaces.Base{
 		Code:    http.StatusOK,
 		Message: &message,
 	})

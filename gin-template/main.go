@@ -18,7 +18,7 @@ func main() {
 	server := core.NewHttpServer()
 
 	// Register routers from the standalone file
-	routers.RegisterRouters(server)
+	routers.Register(server)
 
 	// Run the server
 	server.Run(":8080")
