@@ -1,4 +1,4 @@
-package healtchcheck
+package example
 
 import (
 	"net/http"

@@ -1,4 +1,4 @@
-package healtchcheck
+package example
 
 import (
 	"0xaust1n.github.com/gin-template/internal/pkg/core"
