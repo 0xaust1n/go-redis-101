@@ -1,11 +1,12 @@
 package core
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 )
 
 type Redis struct {
@@ -15,16 +16,24 @@ type Redis struct {
 type IRedis interface {
 	Get(key string) (string, error)
 	Set(key string, value string, ttl time.Duration) error
+	Delete(key string) error
 }
 
 var _ IRedis = (*Redis)(nil)
 
 func (r *Redis) Get(key string) (string, error) {
-	return r.client.Get(key).Result()
+	ctx := context.Background()
+	return r.client.Get(ctx, key).Result()
 }
 
 func (r *Redis) Set(key string, value string, ttl time.Duration) error {
-	return r.client.Set(key, value, ttl).Err()
+	ctx := context.Background()
+	return r.client.Set(ctx, key, value, ttl).Err()
+}
+
+func (r *Redis) Delete(key string) error {
+	ctx := context.Background()
+	return r.client.Del(ctx, key).Err()
 }
 
 func NewCacheServer() *Redis {
@@ -35,8 +44,9 @@ func NewCacheServer() *Redis {
 
 	client := redis.NewClient(&config)
 
+	err := client.Ping(context.Background()).Err()
+
 	// Check if Redis connection is successful
-	_, err := client.Ping().Result()
 	if err != nil {
 		panic(fmt.Sprintf("Failed to connect to Redis at %s: %v", config.Addr, err))
 	}

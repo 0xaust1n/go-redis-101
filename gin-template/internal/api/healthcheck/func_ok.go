@@ -1,4 +1,4 @@
-package healthCheck
+package healtchcheck
 
 import (
 	"net/http"
@@ -7,8 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Ok(c *gin.Context) {
+func (h *healthCheckHandler) Ok(c *gin.Context) {
 	message := "Server Alive"
+
+	h.redis.Set("healthcheck", "ok", 0)
+
 	c.JSON(http.StatusOK, interfaces.BaseResponse{
 		Code:    http.StatusOK,
 		Message: &message,
