@@ -27,12 +27,12 @@ func DefaultConfig() *RouterConfig {
 	}
 }
 
-type RouterGroup interface {
-	Group(path string, handlers ...HandlerFunc) RouterGroup
+type IRouterGroup interface {
+	Group(path string, handlers ...HandlerFunc) *RouterGroup
 	IMethod
 }
 
-var _ IMethod = (*routerGroup)(nil)
+var _ IMethod = (*RouterGroup)(nil)
 
 type IMethod interface {
 	GET(string, ...HandlerFunc)
@@ -42,35 +42,35 @@ type IMethod interface {
 }
 
 // routerGroup implements RouterGroup interface
-type routerGroup struct {
+type RouterGroup struct {
 	group *gin.RouterGroup
 }
 
 // Implementation of RouterGroup interface methods
-func (rg *routerGroup) Group(path string, handlers ...HandlerFunc) RouterGroup {
-	return &routerGroup{group: rg.group.Group(path, handlers...)}
+func (rg *RouterGroup) Group(path string, handlers ...HandlerFunc) *RouterGroup {
+	return &RouterGroup{group: rg.group.Group(path, handlers...)}
 }
 
-func (rg *routerGroup) GET(path string, handlers ...HandlerFunc) {
+func (rg *RouterGroup) GET(path string, handlers ...HandlerFunc) {
 	rg.group.GET(path, handlers...)
 }
 
-func (rg *routerGroup) POST(path string, handlers ...HandlerFunc) {
+func (rg *RouterGroup) POST(path string, handlers ...HandlerFunc) {
 	rg.group.POST(path, handlers...)
 }
 
-func (rg *routerGroup) PUT(path string, handlers ...HandlerFunc) {
+func (rg *RouterGroup) PUT(path string, handlers ...HandlerFunc) {
 	rg.group.PUT(path, handlers...)
 }
 
-func (rg *routerGroup) DELETE(path string, handlers ...HandlerFunc) {
+func (rg *RouterGroup) DELETE(path string, handlers ...HandlerFunc) {
 	rg.group.DELETE(path, handlers...)
 }
 
 // Router is the main router structure that wraps gin.Engine
 type Router struct {
 	engine *gin.Engine
-	*routerGroup
+	*RouterGroup
 }
 
 type IRouter interface {
@@ -100,7 +100,7 @@ func NewWithConfig(config *RouterConfig) *Router {
 
 	return &Router{
 		engine:      engine,
-		routerGroup: &routerGroup{group: engine.Group("")},
+		RouterGroup: &RouterGroup{group: engine.Group("")},
 	}
 }
 
